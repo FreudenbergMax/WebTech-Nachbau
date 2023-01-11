@@ -3,7 +3,7 @@ package de.htwberlin.webtech.webtechnachbau.service;
 import de.htwberlin.webtech.webtechnachbau.persistence.PersonEntity;
 import de.htwberlin.webtech.webtechnachbau.persistence.PersonRepository;
 import de.htwberlin.webtech.webtechnachbau.web.api.Person;
-import de.htwberlin.webtech.webtechnachbau.web.api.PersonCreateRequest;
+import de.htwberlin.webtech.webtechnachbau.web.api.PersonManipulationRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,11 +51,40 @@ public class PersonService {
      * in dessen Tabelle "persons" schreibt
      * @return
      */
-    public Person create(PersonCreateRequest request) {
+    public Person create(PersonManipulationRequest request) {
 
         // request wird in Entity gemappt
         var personEntity = new PersonEntity(request.getFirstName(), request.getLastName(), request.isVaccinated());
         personEntity = personRepository.save(personEntity);
+        return transformEntity(personEntity);
+    }
+
+    /**
+     * Methode aktualisiert Werte einer bereits vorhandenen Entität in der Datenbank. Methode wird dann von
+     * PersonRestController in dessen Methode "updatePerson" verwendet, um die Aktualisierung vorzunehmen
+     * @param id
+     * @param request
+     * @return
+     */
+    public Person update(Long id, PersonManipulationRequest request) {
+        var personEntityOptional = personRepository.findById(id);
+
+        // Falls ID bzw. Entity nicht existiert, null zurückgeben...
+        if (personEntityOptional.isEmpty()) {
+            return null;
+        }
+
+        // ... sonst wird Entity geholt
+        var personEntity = personEntityOptional.get();
+
+        // Entity wird aktualisiert
+        personEntity.setFirstName(request.getFirstName());
+        personEntity.setLastName(request.getLastName());
+        personEntity.setVaccinated(request.isVaccinated());
+
+        // Aktualisierung wird in Datenbank gespeichert
+        personEntity = personRepository.save(personEntity);
+
         return transformEntity(personEntity);
     }
 

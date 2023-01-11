@@ -1,9 +1,8 @@
 package de.htwberlin.webtech.webtechnachbau.web;
 
-import de.htwberlin.webtech.webtechnachbau.persistence.PersonRepository;
 import de.htwberlin.webtech.webtechnachbau.service.PersonService;
 import de.htwberlin.webtech.webtechnachbau.web.api.Person;
-import de.htwberlin.webtech.webtechnachbau.web.api.PersonCreateRequest;
+import de.htwberlin.webtech.webtechnachbau.web.api.PersonManipulationRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +57,7 @@ public class PersonRestController {
      * Client (also PersonRestController) Daten schicken kann, wird der http-body verwendet.
      */
     @PostMapping(path="/api/v1/persons")
-    public ResponseEntity<Void> createPerson(@RequestBody PersonCreateRequest request) throws URISyntaxException {
+    public ResponseEntity<Void> createPerson(@RequestBody PersonManipulationRequest request) throws URISyntaxException {
         var person = personService.create(request);
 
         // URI ist eine Abfolge von Zeichen, die eine Ressource identifizieren (z.B. eine Tabelle bzw. Entität auf einer Website)
@@ -66,5 +65,19 @@ public class PersonRestController {
         return ResponseEntity.created(uri).build();
     }
 
+    /**
+     * Methode dient dazu, bereits in der Datenbank eingetragene Werte zu aktualisieren
+     * @PathVariable stellt eine Verknüpfung zwischen Parameter id von updatePerson und des Pfades
+     * der Annotation @PutMapping her
+     * @RequestBody enthält die neuen Ressourcenattribute, die neu eingetragen werden sollen
+     * @param id
+     * @param request
+     * @return
+     */
+    @PutMapping(path="/api/v1/persons/{id}")
+    public ResponseEntity<Person> updatePerson(@PathVariable(name = "id") Long id, @RequestBody PersonManipulationRequest request) {
+        var person = personService.update(id, request);
+        return person != null ? ResponseEntity.ok(person) : ResponseEntity.notFound().build();
+    }
 
 }
