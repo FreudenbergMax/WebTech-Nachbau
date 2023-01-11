@@ -2,6 +2,11 @@ package de.htwberlin.webtech.webtechnachbau.web.api;
 
 /*
 Diese Klasse dient als Ressource bzw. als REST-Endpunkt für die API-Schnittstelle
+
+Es mag doppelt gemoppelt sein, dass es sowohl eine Klasse Person und eine Klasse PersonEntity gibt. Dies ist
+beabsichtigt, weil man eine Trennung zwischen Datendefinition (Person) und dem Datenmodell (PersonEntity) haben möchte.
+Person gehört der REST-Schnittstelle. Die PersonEntity bildet 1-zu-1 eine Tabelle ab.
+
  */
 public class Person {
 

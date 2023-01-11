@@ -1,5 +1,7 @@
 package de.htwberlin.webtech.webtechnachbau.web;
 
+import de.htwberlin.webtech.webtechnachbau.persistence.PersonRepository;
+import de.htwberlin.webtech.webtechnachbau.service.PersonService;
 import de.htwberlin.webtech.webtechnachbau.web.api.Person;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,12 +17,11 @@ import java.util.List;
 @RestController
 public class PersonRestController {
 
-    private List<Person> persons;
+    // Hiermit wird PersonRepository injected, wodurch ein Zugriff auf die Datenbanktabelle "persons" möglich ist
+    private final PersonService personService;
 
-    public PersonRestController() {
-        this.persons = new ArrayList<>();
-        this.persons.add(new Person(1, "Max", "Mustermann", false));
-        this.persons.add(new Person(2, "Maxima", "Meier", true));
+    public PersonRestController(PersonService personService) {
+        this.personService = personService;
     }
 
     /**
@@ -33,9 +33,8 @@ public class PersonRestController {
      */
     @GetMapping(path="/api/v1/persons")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Person> fetchPersons() {
-
-        return this.persons;
+    public ResponseEntity<List<Person>> fetchPersons() {
+        return ResponseEntity.ok(personService.findAll());
     }
 
 }
