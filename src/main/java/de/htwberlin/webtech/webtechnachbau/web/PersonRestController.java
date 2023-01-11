@@ -28,12 +28,13 @@ public class PersonRestController {
      * Methode verarbeitet GET-Request des Clients. Die angeforderte HTML-Seite wird zurückgegeben, wenn
      * im Browser "localhost:8080/api/v1/persons" angegeben wird.
      * Als Metadaten sollte bei REST-Schnittstellen ein Statuscode mit zurückgegeben werden, ob die Anfrage
-     * geglückt ist. Deswegen wird die ResponseEntity verwendet. Das ist eine Wrapperklasse, die genau das zurückgibt-
+     * geglückt ist. Deswegen wird der ResponseStatus verwendet. Das ist eine Wrapperklasse, die genau das zurückgibt-
      * @return Liste der in der Datenbank hinterlegten Personen
      */
     @GetMapping(path="/api/v1/persons")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Person> fetchPersons() {
+
         return this.persons;
     }
 

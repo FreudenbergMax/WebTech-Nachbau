@@ -1,5 +1,8 @@
 package de.htwberlin.webtech.webtechnachbau.web.api;
 
+/*
+Diese Klasse dient als Ressource bzw. als REST-Endpunkt für die API-Schnittstelle
+ */
 public class Person {
 
     private long id;
