@@ -40,6 +40,20 @@ public class PersonRestController {
     }
 
     /**
+     * Methode dient dazu, um eine bestimmte Entität aus einer Tabelle (hier: persons) zu ziehen.
+     * @PathVariable stellt eine Verknüpfung zwischen Parameter id von fetchPersonById und des Pfades
+     * der Annotation @GetMapping her
+     * @param id der Person, die aufgerufen werden soll
+     * @return Person, die sich hinter der entsprechenden ID verbirgt
+     * @throws URISyntaxException
+     */
+    @GetMapping(path="/api/v1/persons/{id}")
+    public ResponseEntity<Person> fetchPersonById(@PathVariable(name = "id") Long id) {
+        var person = personService.findById(id);
+        return person != null ? ResponseEntity.ok(person) : ResponseEntity.notFound().build();
+    }
+
+    /**
      * POST-Methoden sind schreibende Anfragen, d.h. es werden neue Daten in die Datenbank eingetragen. Damit der
      * Client (also PersonRestController) Daten schicken kann, wird der http-body verwendet.
      */
@@ -51,5 +65,6 @@ public class PersonRestController {
         URI uri = new URI("/api/v1/persons/" + person.getId());
         return ResponseEntity.created(uri).build();
     }
+
 
 }

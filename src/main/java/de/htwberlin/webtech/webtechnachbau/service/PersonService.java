@@ -37,6 +37,16 @@ public class PersonService {
     }
 
     /**
+     * Methode gibt eine Person aus Tabelle persons auf Grundlage der id zurück
+     * @param id ID der Person, die zurückgegeben werden soll
+     * @return Person, dessen ID übergeben wurde
+     */
+    public Person findById(Long id) {
+        var personEntity = personRepository.findById(id);
+        return personEntity.map(this::transformEntity).orElse(null);
+    }
+
+    /**
      * Methode erstellt eine neue Person, die PersonRestController über dessen Methode "createPerson" in die Datenbank
      * in dessen Tabelle "persons" schreibt
      * @return
