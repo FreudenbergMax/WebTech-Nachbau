@@ -29,9 +29,8 @@ public class PersonEntity {
     private Boolean vaccinated;
 
     // Konstruktor wird benötigt, um Entitäten in der Anwendung erzeugen zu können
-    public PersonEntity(Long id, String firstName, String lastName, Boolean vaccinated) {
+    public PersonEntity(String firstName, String lastName, Boolean vaccinated) {
         // id ist eigentlich überflüssig, da diese ja von der Datenbank generiert werden soll
-        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.vaccinated = vaccinated;

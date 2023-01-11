@@ -3,6 +3,7 @@ package de.htwberlin.webtech.webtechnachbau.service;
 import de.htwberlin.webtech.webtechnachbau.persistence.PersonEntity;
 import de.htwberlin.webtech.webtechnachbau.persistence.PersonRepository;
 import de.htwberlin.webtech.webtechnachbau.web.api.Person;
+import de.htwberlin.webtech.webtechnachbau.web.api.PersonCreateRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,19 +21,45 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     public PersonService(PersonRepository personRepository) {
+
         this.personRepository = personRepository;
     }
 
-    // Methode gibt alle PErsonen, welche in der Tabelle "persons" sind, zurück
+    /**
+     * @return Methode gibt alle Prsonen, welche in der Tabelle "persons" sind, zurück
+     */
     public List<Person> findAll() {
         // Liste mit allen Personen erstellen
         List<PersonEntity> persons = personRepository.findAll();
 
         // Transformation zwischen den Datenmodellen
-        return persons.stream().map(personsEntity -> new Person(personsEntity.getId(),
-                                                                personsEntity.getFirstName(),
-                                                                personsEntity.getLastName(),
-                                                                personsEntity.getVaccinated())
-                                    ).collect(Collectors.toList());
+        return persons.stream().map(this::transformEntity).collect(Collectors.toList());
+    }
+
+    /**
+     * Methode erstellt eine neue Person, die PersonRestController über dessen Methode "createPerson" in die Datenbank
+     * in dessen Tabelle "persons" schreibt
+     * @return
+     */
+    public Person create(PersonCreateRequest request) {
+
+        // request wird in Entity gemappt
+        var personEntity = new PersonEntity(request.getFirstName(), request.getLastName(), request.isVaccinated());
+        personEntity = personRepository.save(personEntity);
+        return transformEntity(personEntity);
+    }
+
+    /**
+     * Methode mappt eine PersonEntity zu eine Person
+     * @param personEntity welche in eine Person gemappt werden soll
+     * @return Person, welche aus personEntity gemappt wurde
+     */
+    private Person transformEntity(PersonEntity personEntity) {
+        return new Person(
+                personEntity.getId(),
+                personEntity.getFirstName(),
+                personEntity.getLastName(),
+                personEntity.getVaccinated()
+        );
     }
 }

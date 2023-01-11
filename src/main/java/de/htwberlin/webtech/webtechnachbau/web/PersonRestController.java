@@ -3,12 +3,13 @@ package de.htwberlin.webtech.webtechnachbau.web;
 import de.htwberlin.webtech.webtechnachbau.persistence.PersonRepository;
 import de.htwberlin.webtech.webtechnachbau.service.PersonService;
 import de.htwberlin.webtech.webtechnachbau.web.api.Person;
+import de.htwberlin.webtech.webtechnachbau.web.api.PersonCreateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ public class PersonRestController {
     private final PersonService personService;
 
     public PersonRestController(PersonService personService) {
+
         this.personService = personService;
     }
 
@@ -35,6 +37,19 @@ public class PersonRestController {
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<List<Person>> fetchPersons() {
         return ResponseEntity.ok(personService.findAll());
+    }
+
+    /**
+     * POST-Methoden sind schreibende Anfragen, d.h. es werden neue Daten in die Datenbank eingetragen. Damit der
+     * Client (also PersonRestController) Daten schicken kann, wird der http-body verwendet.
+     */
+    @PostMapping(path="/api/v1/persons")
+    public ResponseEntity<Void> createPerson(@RequestBody PersonCreateRequest request) throws URISyntaxException {
+        var person = personService.create(request);
+
+        // URI ist eine Abfolge von Zeichen, die eine Ressource identifizieren (z.B. eine Tabelle bzw. Entität auf einer Website)
+        URI uri = new URI("/api/v1/persons/" + person.getId());
+        return ResponseEntity.created(uri).build();
     }
 
 }
